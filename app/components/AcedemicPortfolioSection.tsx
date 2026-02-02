@@ -34,9 +34,9 @@ const AcademicPortfolioSection: React.FC = () => {
       {/* Tabs */}
       <Tabs defaultValue="pgd" className="space-y-4">
         <TabsList className="justify-center mb-8">
-          <TabsTrigger value="pgd">PGD Programmes</TabsTrigger>
-          <TabsTrigger value="msc">MSc Programmes</TabsTrigger>
-          <TabsTrigger value="phd">PhD Programmes</TabsTrigger>
+          <TabsTrigger value="pgd">PGD Prog</TabsTrigger>
+          <TabsTrigger value="msc">MSc Prog</TabsTrigger>
+          <TabsTrigger value="phd">PhD Prog</TabsTrigger>
         </TabsList>
 
         {/* PGD Tab Content */}
