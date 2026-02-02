@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | TSU Postgraduate Admissions Guide",
   },
   description:
-    "The TSU Postgraduate Admissions Guide is a verified, independent resource for Taraba State University postgraduate applicants. Explore PGD, MSc, and PhD programmes, admission requirements, application steps, and official 2024/2025 updates.",
+    "The TSU Postgraduate Admissions Guide is a verified, independent resource for Taraba State University postgraduate applicants. Explore PGD, MSc, and PhD programmes, admission requirements, application steps, and official 2025/2026 updates.",
   keywords: [
     "Taraba State University",
     "TSU Postgraduate",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "TSU MSc",
     "TSU PhD",
     "Postgraduate Admissions Nigeria",
-    "TSU 2024 2025",
+    "TSU 2025 2026",
     "TSU PG School",
   ],
   authors: [
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "TSU Postgraduate Admissions Guide | 2024/2025",
+    title: "TSU Postgraduate Admissions Guide | 2025/2026",
     description:
       "Verified postgraduate admission information for Taraba State University. Find PGD, MSc, and PhD programmes, requirements, and official application guidance for the 2024/2025 session.",
     type: "website",
@@ -53,9 +53,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "TSU Postgraduate Admissions Guide | 2024/2025",
+    title: "TSU Postgraduate Admissions Guide | 2025/2026",
     description:
-      "Your verified guide to PGD, MSc, and PhD admissions at Taraba State University for the 2024/2025 academic session.",
+      "Your verified guide to PGD, MSc, and PhD admissions at Taraba State University for the 2025/2026 academic session.",
   },
 };
 
