@@ -19,7 +19,7 @@ const leadershipData: LeadershipRole[] = [
     imageSrc: "/images/leadership/provost.png",
   },
   {
-    name: "Dr. [Name]",
+    name: "Dr. Miftahu Idris",
     title: "Deputy Provost, College of Postgraduate Studies",
     imageSrc: "/images/leadership/dpv.png",
   },
