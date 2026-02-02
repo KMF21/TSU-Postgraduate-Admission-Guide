@@ -21,7 +21,7 @@ const leadershipData: LeadershipRole[] = [
   {
     name: "Dr. [Name]",
     title: "Deputy Provost, College of Postgraduate Studies",
-    imageSrc: "/images/leadership/deputy-provost.png",
+    imageSrc: "/images/leadership/dpv.png",
   },
   {
     name: "Dr. John Danjuma",
