@@ -25,7 +25,7 @@ const faqs: FAQItem[] = [
   {
     id: "faq3",
     question: "What is the application fee for all programmes?",
-    answer: "The non-refundable application fee for all advertised programmes is ₦20,300.",
+    answer: "The non-refundable application fee for all advertised programmes is ₦35,000.",
   },
 ];
 
