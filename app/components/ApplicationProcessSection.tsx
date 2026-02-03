@@ -25,7 +25,7 @@ const applicationSteps: StepItem[] = [
   {
     id: "s3",
     step: "Step 3",
-    description: "Pay the non-refundable application fee (₦35,000).",
+    description: "Pay the non-refundable application fee (₦35,000) and Screening fee (10,000)",
   },
   {
     id: "s4",
