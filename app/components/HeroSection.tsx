@@ -7,7 +7,7 @@ import PG from "../assets/PG.png"
 
 export function HeroSection() {
   return (
-    <section className="relative isolate overflow-hidden min-h-[600px] flex items-center">
+    <section  id="hero" className="relative isolate overflow-hidden min-h-[600px] flex items-center">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image

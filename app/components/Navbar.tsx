@@ -12,7 +12,7 @@ const navItems = [
   { label: "Leadership", href: "#leadership" },
   { label: "Programmes", href: "#academic-portfolio" },
   { label: "Application Process", href: "#application-process" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "#official-contacts" },
 ];
 
 export const Navbar: React.FC = () => {
