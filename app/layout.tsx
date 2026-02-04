@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Merriweather } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Navbar } from "./components/Navbar";
+import { AnalyticsProvider } from "./components/AnalyticsProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,11 +34,7 @@ export const metadata: Metadata = {
     "TSU 2025 2026",
     "TSU PG School",
   ],
-  authors: [
-    {
-      name: "TSU Postgraduate Admissions Guide",
-    },
-  ],
+  authors: [{ name: "TSU Postgraduate Admissions Guide" }],
   creator: "TSU Postgraduate Admissions Guide",
   publisher: "TSU Postgraduate Admissions Guide",
   robots: {
@@ -46,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "TSU Postgraduate Admissions Guide | 2025/2026",
     description:
-      "Verified postgraduate admission information for Taraba State University. Find PGD, MSc, and PhD programmes, requirements, and official application guidance for the 2024/2025 session.",
+      "Verified postgraduate admission information for Taraba State University. Find PGD, MSc, and PhD programmes, requirements, and official application guidance.",
     type: "website",
     locale: "en_NG",
     siteName: "TSU Postgraduate Admissions Guide",
@@ -59,6 +57,8 @@ export const metadata: Metadata = {
   },
 };
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
 export default function RootLayout({
   children,
 }: {
@@ -66,9 +66,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {GA_ID && (
+          <>
+            {/* Google Analytics */}
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
+      </head>
       <body
         className={`${inter.variable} ${merriweather.variable} font-body bg-[#FAF9F6] text-[#333333]`}
       >
+        <AnalyticsProvider />
         <Navbar />
         {children}
       </body>
