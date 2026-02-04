@@ -14,7 +14,7 @@ const leadershipData: LeadershipRole[] = [
     imageSrc: "/images/leadership/vc.png",
   },
   {
-    name: "Prof. Chris Amuche",
+    name: "Prof. Christian Igomu Amuche",
     title: "Provost, College of Postgraduate Studies",
     imageSrc: "/images/leadership/provost.png",
   },
