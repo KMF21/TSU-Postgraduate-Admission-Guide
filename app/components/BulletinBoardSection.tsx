@@ -13,7 +13,7 @@ interface BulletinItem {
 
 const bulletins: BulletinItem[] = [
   { id: "b1", title: "Application portal opens", date: "30-01-2026" },
-  { id: "b2", title: "Application deadline", date: "00-00-2026" },
+  { id: "b2", title: "Application deadline", date: "30-03-2026" },
   { id: "b3", title: "Screening / interviews", date: "00-00-2026" },
 ];
 
