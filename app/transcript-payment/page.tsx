@@ -38,7 +38,7 @@ export default function TranscriptPaymentPage() {
   const [isPaying, setIsPaying] = useState(false);
 
   const BASE_FEE = 10000;
-  const SERVICE_CHARGE = 300;
+  const SERVICE_CHARGE = 200;
   const totalAmount = BASE_FEE + SERVICE_CHARGE;
 
   // React Hook Form + Zod
@@ -76,7 +76,12 @@ const onSubmit = (data: TranscriptFormInputs) => {
     email: data.email,
     amount: totalAmount * 100,
     currency: "NGN",
-    ref: reference,
+    ref: reference, 
+
+    subaccount: process.env.NEXT_PUBLIC_PAYSTACK_SUBACCOUNT,
+  transaction_charge: SERVICE_CHARGE * 100, // your ₦200
+  bearer: "subaccount", // VERY IMPORTANT
+
     metadata: { ...data, serviceCharge: SERVICE_CHARGE, reference },
 
     // ✅ Must be normal functions

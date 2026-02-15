@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { client } from "@/sanity/lib/client";
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
-const BASE_TRANSCRIPT_FEE = 20300; // NGN
+const BASE_TRANSCRIPT_FEE = 10200; // NGN
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });

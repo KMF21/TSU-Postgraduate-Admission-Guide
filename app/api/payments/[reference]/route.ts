@@ -1,11 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { sanityServer } from "@/sanity/lib/serverClient";
 
-export async function GET(req: Request, { params }: { params: { reference: string } }) {
-  const { reference } = params;
+type RouteContext = {
+  params: Promise<{ reference: string }>;
+};
+
+export async function GET(req: NextRequest, context: RouteContext) {
+  // ⚠️ NEW NEXTJS 15 RULE
+  const { reference } = await context.params;
 
   if (!reference) {
-    return NextResponse.json({ message: "Reference is required" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Reference is required" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -19,11 +27,18 @@ export async function GET(req: Request, { params }: { params: { reference: strin
     );
 
     if (!payment) {
-      return NextResponse.json({ message: "Payment not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Payment not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(payment);
   } catch (error: any) {
-    return NextResponse.json({ message: error.message || "Failed to fetch payment" }, { status: 500 });
+    console.error("Payment fetch error:", error);
+    return NextResponse.json(
+      { message: error.message || "Failed to fetch payment" },
+      { status: 500 }
+    );
   }
 }
