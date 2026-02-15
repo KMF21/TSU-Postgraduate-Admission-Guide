@@ -1,89 +1,65 @@
+// app/receipts/[reference]/page.tsx
 import { sanityServer } from "@/sanity/lib/serverClient";
 import { notFound } from "next/navigation";
+import ReceiptPolling from "./ReceiptPolling";
+import Logo from "../../assets/tsu_logo1.png";
 import Image from "next/image";
-import PrintButton from "@/app/components/PrintButton";
+import PrintButton from "./PrintButton";
 
-type Props = {
-  params: Promise<{ reference: string }>;
-};
-
-async function getPayment(reference: string) {
-  return await sanityServer.fetch(
-    `*[_type == "transcriptPayment" && _id == $ref][0]{
-      _id,
-      fullName,
-      email,
-      phone,
-      programme,
-      yearOfGraduation,
-      destinationInstitution,
-      amount,
-      extraCharge,
-      status,
-      paidAt
-    }`,
-    { ref: reference }
-  );
-}
+type Props = { params: Promise<{ reference: string }> };
 
 export default async function ReceiptPage({ params }: Props) {
-
-  // ⚠️ VERY IMPORTANT LINE
+  // Unwrap async params in Next 15+
   const { reference } = await params;
 
-  const payment = await getPayment(reference);
+  if (!reference) notFound();
+
+  // Fetch payment server-side
+  const payment = await sanityServer.fetch(
+    `*[_type == "transcriptPayment" && _id == $ref][0]{
+      _id, fullName, matricNumber, email, phone,
+      programme, yearOfGraduation, destinationInstitution,
+      extraCharge, amount, status, paidAt
+    }`,
+    { ref: String(reference) }
+  );
 
   if (!payment) notFound();
 
-  // Wait for webhook
-  if (payment.status !== "paid") {
-    return (
-      <div className="max-w-xl mx-auto p-10 text-center">
-        <h1 className="text-2xl font-bold text-yellow-600">
-          Payment Processing
-        </h1>
-        <p className="mt-3 text-gray-600">
-          Your payment is being confirmed by Paystack.
-          This usually takes 10–30 seconds.
-          Please do not close this page.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-3xl mx-auto p-6 print:p-0">
+    <div className="max-w-3xl mx-auto p-6 print:p-0 md:mt-10">
       <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 print:border-0 print:shadow-none">
-
+        {/* Header */}
         <div className="flex flex-col items-center mb-6">
-          <Image
-            src="/tsu-logo.png"
-            alt="TSU Logo"
-            width={100}
-            height={100}
-            className="mb-2"
-          />
-
-          <h1 className="text-2xl font-bold text-[#0055A4] text-center">
+          <Image src={Logo} alt="TSU Logo" width={100} height={100} />
+          <h1 className="text-2xl font-bold text-[#0055A4] mt-2 text-center">
             Taraba State University
           </h1>
-
           <p className="text-sm text-gray-600 text-center">
             Postgraduate Transcript Payment Receipt
           </p>
         </div>
 
+        {/* Print Button */}
+        <div className="mb-4 text-center print:hidden">
+       <PrintButton />
+        </div>
+
+        {/* Payment Details */}
         <div className="grid grid-cols-1 gap-4 mb-6">
           {[
             ["Full Name", payment.fullName],
+            ["Matric Number", payment.matricNumber],
             ["Email", payment.email],
             ["Phone Number", payment.phone],
             ["Programme", payment.programme],
             ["Year of Graduation", payment.yearOfGraduation],
             ["Destination Institution", payment.destinationInstitution],
-            ["Amount Paid", `₦${Number(payment.amount).toLocaleString()}`],
+            ["Extra Charge (NGN)", `₦${payment.extraCharge?.toLocaleString() || 0}`],
+            ["Amount Paid (NGN)", `₦${payment.amount.toLocaleString()}`],
             ["Transaction Reference", payment._id],
-            ["Payment Date", new Date(payment.paidAt).toLocaleString()],
+            ["Payment Status", payment.status],
+            ["Payment Date", payment.paidAt ? new Date(payment.paidAt).toLocaleString() : "Pending"],
           ].map(([label, value]) => (
             <div key={label} className="flex justify-between border p-2 rounded">
               <span className="font-semibold">{label}</span>
@@ -92,13 +68,10 @@ export default async function ReceiptPage({ params }: Props) {
           ))}
         </div>
 
-        <p className="text-center text-gray-500 text-sm">
-          This is an official receipt for your transcript payment at Taraba State University.
-        </p>
-
-    <div className="mt-6 flex justify-center print:hidden">
-  <PrintButton />
-</div>
+        {/* Payment Pending Polling */}
+        {payment.status !== "paid" && (
+          <ReceiptPolling reference={payment._id} currentStatus={payment.status} />
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ const schema = z.object({
   programme: z.string(),
   yearOfGraduation: z.string(),
   destinationInstitution: z.string(),
+  extraCharge: z.number().optional(),
 });
 
 export async function POST(req: Request) {
@@ -19,20 +20,20 @@ export async function POST(req: Request) {
     const body = await req.json();
     const data = schema.parse(body);
 
-    // ---- Pricing ----
-    const transcriptFee = 10000; // TSU official fee (edit later)
-    const serviceCharge = 200; // your platform fee
+    const transcriptFee = 5000; // base fee
+    const serviceCharge = data.extraCharge ?? 200; // default service charge
     const totalAmount = transcriptFee + serviceCharge;
 
     const reference = `TSU-${nanoid(10)}`;
 
-    // 1️⃣ Create pending record in Sanity
+    // 1️⃣ Create pending payment in Sanity
     await sanityServer.create({
-      _type: "transcriptRequest",
-      reference,
+      _type: "transcriptPayment",
+      _id: reference, // ensure unique ID = reference
       status: "pending",
-      ...data,
+      currency: "NGN",
       amount: totalAmount,
+      ...data,
     });
 
     // 2️⃣ Initialize Paystack
@@ -40,12 +41,15 @@ export async function POST(req: Request) {
       "https://api.paystack.co/transaction/initialize",
       {
         email: data.email,
-        amount: totalAmount * 100, // Paystack uses kobo
+        amount: totalAmount * 100,
         reference,
+        currency: "NGN",
         metadata: {
-          matricNumber: data.matricNumber,
-          fullName: data.fullName,
+          ...data,
+          serviceCharge,
+          reference,
         },
+        callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/callback`,
       },
       {
         headers: {
@@ -57,11 +61,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       authorization_url: paystackRes.data.data.authorization_url,
+      reference,
+      amount: totalAmount,
     });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json(
-      { message: "Payment initialization failed" },
+      { message: error?.message || "Payment initialization failed" },
       { status: 400 }
     );
   }

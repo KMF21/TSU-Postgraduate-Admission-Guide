@@ -1,95 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 import { sanityServer } from "@/sanity/lib/serverClient";
-
-// Paystack signs with SECRET KEY (NOT webhook secret)
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
   try {
-    // VERY IMPORTANT: get raw body (do NOT use req.json())
-    const body = await req.text();
+    const body = await req.json();
+    const reference = body.reference;
 
-    // Paystack signature header
-    const signature = req.headers.get("x-paystack-signature");
-
-    if (!signature) {
-      console.log("❌ No Paystack signature header");
-      return NextResponse.json(
-        { status: "error", message: "No signature header" },
-        { status: 400 }
-      );
+    if (!reference) {
+      return NextResponse.json({ status: "error", message: "No reference provided" }, { status: 400 });
     }
 
-    // Verify webhook
-    const hash = crypto
-      .createHmac("sha512", PAYSTACK_SECRET_KEY)
-      .update(body)
-      .digest("hex");
+    // 1️⃣ Verify payment with Paystack API
+    const verifyRes = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+      headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
+    });
 
-    if (hash !== signature) {
-      console.log("❌ Invalid Paystack signature");
-      return NextResponse.json(
-        { status: "error", message: "Invalid signature" },
-        { status: 403 }
-      );
+    const paystackData = verifyRes.data.data;
+
+    if (paystackData.status !== "success") {
+      return NextResponse.json({ status: "error", message: "Payment not successful" }, { status: 400 });
     }
 
-    console.log("✅ Paystack webhook verified");
-
-    // Parse event
-    const payload = JSON.parse(body);
-
-    // Only care about successful payments
-    if (payload.event !== "charge.success") {
-      console.log("ℹ️ Ignored event:", payload.event);
-      return NextResponse.json({ status: "ignored" });
-    }
-
-    const paymentData = payload.data;
-
-    const reference = paymentData.reference;
-    const customer = paymentData.customer || {};
-    const metadata = paymentData.metadata || {};
-    const amount = paymentData.amount;
-    const paid_at = paymentData.paid_at;
-
-    const fullName = `${customer.first_name || metadata.fullName || ""} ${
-      customer.last_name || ""
-    }`.trim();
-
-    // Build transaction document
-    const transaction = {
+    // 2️⃣ Save payment to Sanity
+    await sanityServer.create({
       _type: "transcriptPayment",
-      _id: reference,
-      reference,
+      _id: reference, // use Paystack reference as ID
+      fullName: paystackData.metadata.fullName,
+      matricNumber: paystackData.metadata.matricNumber,
+      email: paystackData.customer.email,
+      phone: paystackData.metadata.phone,
+      programme: paystackData.metadata.programme,
+      yearOfGraduation: paystackData.metadata.yearOfGraduation,
+      destinationInstitution: paystackData.metadata.destinationInstitution,
+      serviceCharge: paystackData.metadata.serviceCharge,
+      amount: paystackData.amount / 100, // convert kobo → Naira
       status: "paid",
-      fullName,
-      email: metadata.email || customer.email || "",
-      phone: metadata.phone || "",
-      matricNumber: metadata.matricNumber || "",
-      programme: metadata.programme || "",
-      yearOfGraduation: metadata.yearOfGraduation || "",
-      destinationInstitution: metadata.destinationInstitution || "",
-      extraCharge: metadata.extraCharge || 0,
-      amount: amount / 100, // convert kobo → naira
-      currency: "NGN",
-      paidAt: paid_at || new Date().toISOString(),
-      receiptUrl: `/receipts/${reference}`,
-      paystackMetadata: metadata,
-    };
-
-    // Save to Sanity
-    await sanityServer.createOrReplace(transaction);
-
-    console.log("💾 Payment saved:", reference);
+      paidAt: new Date().toISOString(),
+    });
 
     return NextResponse.json({ status: "success" });
-  } catch (error) {
-    console.error("🚨 Paystack webhook error:", error);
-    return NextResponse.json(
-      { status: "error", message: "Internal server error" },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    console.error("Webhook error:", err.message);
+    return NextResponse.json({ status: "error", message: "Webhook failed" }, { status: 500 });
   }
 }
