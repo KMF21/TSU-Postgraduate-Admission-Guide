@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { AnalyticsProvider } from "./components/AnalyticsProvider";
+import { Footer } from "./components/footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -93,6 +94,7 @@ export default function RootLayout({
         <AnalyticsProvider />
         <Navbar />
         {children}
+         <Footer />
       </body>
     </html>
   );
