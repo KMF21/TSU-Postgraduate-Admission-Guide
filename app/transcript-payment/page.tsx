@@ -37,8 +37,8 @@ export default function TranscriptPaymentPage() {
   const [paystackLoaded, setPaystackLoaded] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
 
-  const BASE_FEE = 5000;
-  const SERVICE_CHARGE = 200;
+  const BASE_FEE = 10000;
+  const SERVICE_CHARGE = 300;
   const totalAmount = BASE_FEE + SERVICE_CHARGE;
 
   // React Hook Form + Zod

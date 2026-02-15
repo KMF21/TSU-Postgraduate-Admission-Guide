@@ -27,7 +27,7 @@ export default async function ReceiptPage({ params }: Props) {
   if (!payment) notFound();
 
   return (
-    <div className="max-w-3xl mx-auto p-6 print:p-0 md:mt-10">
+    <div className="max-w-3xl mx-auto p-6 print:p-0 md:my-10">
       <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 print:border-0 print:shadow-none">
         {/* Header */}
         <div className="flex flex-col items-center mb-6">
