@@ -3,11 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import PG from "../assets/PG.png"
+import PG from "../assets/PG.png";
 
 export function HeroSection() {
   return (
-    <section  id="hero" className="relative isolate overflow-hidden min-h-[600px] flex items-center">
+    <section
+      id="hero"
+      className="relative isolate overflow-hidden min-h-[600px] flex items-center"
+    >
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
@@ -15,15 +18,16 @@ export function HeroSection() {
           alt="Taraba State University College of Postgraduate Studies"
           fill
           priority
-          // Focuses on the sign (left side) so it stays visible on mobile
           className="object-cover object-[25%_center]"
           sizes="100vw"
           quality={90}
         />
-        {/* Deep Navy Overlay for readability */}
+
+        {/* Overlay */}
         <div className="absolute inset-0 bg-[#003366]/75" />
       </div>
 
+      {/* Content */}
       <div className="mx-auto max-w-6xl px-6 py-28 text-center text-white">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight drop-shadow-md">
           TSU Postgraduate Admissions Guide
@@ -35,24 +39,39 @@ export function HeroSection() {
           programmes, and stay updated with official announcements.
         </p>
 
+        {/* CTA BUTTONS */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+
+          {/* 🔥 NEW PAYMENT BUTTON */}
           <Button
             asChild
             size="lg"
-            className="bg-[#D4AF37] text-[#003366] hover:bg-[#2E7D32] hover:text-white transition-all font-semibold shadow-lg"
+            className="bg-[#D4AF37] text-[#003366] hover:bg-[#c39b2f] hover:text-white transition-all font-semibold shadow-xl px-6 py-4 text-base"
+          >
+            <Link href="/transcript-payment">
+              Pay for Transcript Processing
+            </Link>
+          </Button>
+
+          {/* WhatsApp Community */}
+          <Button
+            asChild
+            size="lg"
+            className="bg-[#25D366] text-white hover:bg-[#1ebe57] transition-all font-semibold shadow-lg px-6 py-4 text-base"
           >
             <Link href="https://chat.whatsapp.com/D1A1DtRiFN3Fr2j7iZaRYk?mode=gi_t">
               Join the WhatsApp Admission Community
             </Link>
           </Button>
 
+          {/* View Requirements */}
           <Button
             asChild
             variant="outline"
             size="lg"
-            className="border-white text-[#003366] hover:bg-white/20 hover:text-white transition-all"
+            className="border-white text-white bg-white/20 hover:text-[#003366] transition-all px-6 py-4 text-base"
           >
-            <Link href="#requirements">View Admission Requirements</Link>
+            <Link href="#admission-requirements">View Admission Requirements</Link>
           </Button>
         </div>
 
