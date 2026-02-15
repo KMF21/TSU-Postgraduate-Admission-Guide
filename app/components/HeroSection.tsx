@@ -53,16 +53,7 @@ export function HeroSection() {
             </Link>
           </Button>
 
-          {/* WhatsApp Community */}
-          <Button
-            asChild
-            size="lg"
-            className="bg-[#D4AF37] text-[#003366] hover:bg-[#c39b2f] hover:text-white transition-all font-semibold shadow-xl px-6 py-4 text-base"
-          >
-            <Link href="/transcript-payment">
-              Pay for Transcript Processing
-            </Link>
-          </Button>
+          
 
           {/* WhatsApp Community */}
           {/* <Button
