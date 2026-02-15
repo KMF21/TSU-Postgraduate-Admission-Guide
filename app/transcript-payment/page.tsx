@@ -123,7 +123,7 @@ export default function TranscriptPaymentPage() {
       <div className="mb-6 p-4 border-l-4 border-[#0055A4] bg-blue-50 rounded">
         <p className="text-sm text-gray-800">
           <strong>Important:</strong> This portal is only for applicants who
-          studied at Taraba State University and now need the university to
+          studied at Taraba State University (PGD and MSc) and now need the university to
           issue their academic transcript to another institution, or who
           intend to continue further studies at TSU.
         </p>
