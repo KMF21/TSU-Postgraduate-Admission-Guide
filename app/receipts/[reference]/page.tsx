@@ -55,7 +55,7 @@ export default async function ReceiptPage({ params }: Props) {
             ["Programme", payment.programme],
             ["Year of Graduation", payment.yearOfGraduation],
             ["Destination Institution", payment.destinationInstitution],
-            ["Extra Charge (NGN)", `₦${payment.extraCharge?.toLocaleString() || 0}`],
+            // ["Extra Charge (NGN)", `₦${payment.extraCharge?.toLocaleString() || 0}`],
             ["Amount Paid (NGN)", `₦${payment.amount.toLocaleString()}`],
             ["Transaction Reference", payment._id],
             ["Payment Status", payment.status],

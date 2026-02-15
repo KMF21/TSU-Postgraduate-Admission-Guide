@@ -61,54 +61,55 @@ export default function TranscriptPaymentPage() {
     return () => void document.body.removeChild(script);
   }, []);
 
-  const onSubmit = (data: TranscriptFormInputs) => {
-    if (!paystackLoaded) {
-      toast.info("Payment system is still loading. Please wait a moment...");
-      return;
-    }
+const onSubmit = (data: TranscriptFormInputs) => {
+  if (!paystackLoaded) {
+    toast.info("Payment system is still loading. Please wait a moment...");
+    return;
+  }
 
-    setIsPaying(true);
-    const reference = uuidv4();
+  setIsPaying(true);
+  const reference = uuidv4();
 
-    try {
-      const handler = (window as any).PaystackPop.setup({
-        key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-        email: data.email,
-        amount: totalAmount * 100,
-        currency: "NGN",
-        ref: reference,
-        metadata: { ...data, serviceCharge: SERVICE_CHARGE, reference },
+  // Make sure handler is a var and functions are normal functions
+  const handler = (window as any).PaystackPop.setup({
+    key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+    email: data.email,
+    amount: totalAmount * 100,
+    currency: "NGN",
+    ref: reference,
+    metadata: { ...data, serviceCharge: SERVICE_CHARGE, reference },
 
-        callback: function (response: any) {
-          toast.success("Payment successful! Saving to server...");
-          fetch("/api/paystack/webhook", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reference: response.reference }),
-          })
-            .then(() => router.push(`/receipts/${response.reference}`))
-            .catch((err) => {
-              console.error("Error saving payment:", err);
-              toast.error(
-                "Payment succeeded but could not save record. Contact support.",
-              );
-              setIsPaying(false);
-            });
-        },
+    // ✅ Must be normal functions
+    callback: function (response: any) {
+      toast.success("Payment successful! Saving to server...");
 
-        onClose: function () {
-          toast.warn("Payment window closed. Transaction not completed.");
+      fetch("/api/paystack/webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference: response.reference }),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Webhook failed");
+          router.push(`/receipts/${response.reference}`);
+        })
+        .catch((err) => {
+          console.error("Error saving payment:", err);
+          toast.error(
+            "Payment succeeded but could not save record. Contact support."
+          );
           setIsPaying(false);
-        },
-      });
+        });
+    },
 
-      handler.openIframe();
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong. Please try again.");
+    onClose: function () {
+      toast.warn("Payment window closed. Transaction not completed.");
       setIsPaying(false);
-    }
-  };
+    },
+  });
+
+  handler.openIframe();
+};
+
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md md:mt-22">
@@ -122,7 +123,7 @@ export default function TranscriptPaymentPage() {
       {/* Fee Breakdown */}
       <div className="bg-blue-50 border rounded-md p-4 text-sm mb-3">
         <p className="flex justify-between font-semibold">
-          <span>Transcript Fee (incl. Service Charge)</span>
+          <span>Transcript Fee</span>
           <span>₦{totalAmount.toLocaleString()}</span>
         </p>
         <hr className="my-2" />
