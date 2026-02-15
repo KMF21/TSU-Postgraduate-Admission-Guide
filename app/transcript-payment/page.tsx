@@ -61,63 +61,57 @@ export default function TranscriptPaymentPage() {
     return () => void document.body.removeChild(script);
   }, []);
 
-const onSubmit = (data: TranscriptFormInputs) => {
-  if (!paystackLoaded) {
-    toast.info("Payment system is still loading. Please wait a moment...");
-    return;
-  }
+  const onSubmit = (data: TranscriptFormInputs) => {
+    if (!paystackLoaded) {
+      toast.info("Payment system is still loading. Please wait a moment...");
+      return;
+    }
 
-  setIsPaying(true);
-  const reference = uuidv4();
+    setIsPaying(true);
+    const reference = uuidv4();
 
-  // Make sure handler is a var and functions are normal functions
-  const handler = (window as any).PaystackPop.setup({
-    key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-    email: data.email,
-    amount: totalAmount * 100,
-    currency: "NGN",
-    ref: reference, 
+    const handler = (window as any).PaystackPop.setup({
+      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+      email: data.email,
+      amount: totalAmount * 100,
+      currency: "NGN",
+      ref: reference,
+      subaccount: process.env.NEXT_PUBLIC_PAYSTACK_SUBACCOUNT,
+      transaction_charge: SERVICE_CHARGE * 100,
+      bearer: "subaccount",
+      metadata: { ...data, serviceCharge: SERVICE_CHARGE, reference },
 
-    subaccount: process.env.NEXT_PUBLIC_PAYSTACK_SUBACCOUNT,
-  transaction_charge: SERVICE_CHARGE * 100, // your ₦200
-  bearer: "subaccount", // VERY IMPORTANT
-
-    metadata: { ...data, serviceCharge: SERVICE_CHARGE, reference },
-
-    // ✅ Must be normal functions
-    callback: function (response: any) {
-      toast.success("Payment successful! Saving to server...");
-
-      fetch("/api/paystack/webhook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reference: response.reference }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Webhook failed");
-          router.push(`/receipts/${response.reference}`);
+      callback: function (response: any) {
+        toast.success("Payment successful! Saving to server...");
+        fetch("/api/paystack/webhook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reference: response.reference }),
         })
-        .catch((err) => {
-          console.error("Error saving payment:", err);
-          toast.error(
-            "Payment succeeded but could not save record. Contact support."
-          );
-          setIsPaying(false);
-        });
-    },
+          .then((res) => {
+            if (!res.ok) throw new Error("Webhook failed");
+            router.push(`/receipts/${response.reference}`);
+          })
+          .catch((err) => {
+            console.error("Error saving payment:", err);
+            toast.error(
+              "Payment succeeded but could not save record. Contact support."
+            );
+            setIsPaying(false);
+          });
+      },
 
-    onClose: function () {
-      toast.warn("Payment window closed. Transaction not completed.");
-      setIsPaying(false);
-    },
-  });
+      onClose: function () {
+        toast.warn("Payment window closed. Transaction not completed.");
+        setIsPaying(false);
+      },
+    });
 
-  handler.openIframe();
-};
-
+    handler.openIframe();
+  };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md md:my-22">
+    <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md my-14 md:my-22">
       <h1 className="text-2xl font-bold text-[#0055A4] mb-2">
         Transcript Payment
       </h1>
@@ -125,8 +119,18 @@ const onSubmit = (data: TranscriptFormInputs) => {
         Taraba State University — Postgraduate Transcript Request
       </p>
 
+      {/* Important Notice */}
+      <div className="mb-6 p-4 border-l-4 border-[#0055A4] bg-blue-50 rounded">
+        <p className="text-sm text-gray-800">
+          <strong>Important:</strong> This portal is only for applicants who
+          studied at Taraba State University and now need the university to
+          issue their academic transcript to another institution, or who
+          intend to continue further studies at TSU.
+        </p>
+      </div>
+
       {/* Fee Breakdown */}
-      <div className="bg-blue-50 border rounded-md p-4 text-sm mb-3">
+      <div className="bg-blue-50 border rounded-md p-4 text-sm mb-5">
         <p className="flex justify-between font-semibold">
           <span>Transcript Fee</span>
           <span>₦{totalAmount.toLocaleString()}</span>
@@ -145,14 +149,10 @@ const onSubmit = (data: TranscriptFormInputs) => {
           { label: "Email", name: "email", type: "email" },
           { label: "Phone", name: "phone" },
           { label: "Programme", name: "programme" },
-          {
-            label: "Year of Graduation",
-            name: "yearOfGraduation",
-            type: "number",
-          },
+          { label: "Year of Graduation", name: "yearOfGraduation", type: "number" },
           { label: "Destination Institution", name: "destinationInstitution" },
         ].map((field) => (
-          <div key={field.name}>
+          <div key={field.name} className="space-y-0.5">
             <Label>{field.label}</Label>
             <Input
               type={field.type || "text"}
