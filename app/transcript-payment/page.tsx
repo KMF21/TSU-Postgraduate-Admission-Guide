@@ -112,7 +112,7 @@ const onSubmit = (data: TranscriptFormInputs) => {
 
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md md:mt-22">
+    <div className="max-w-xl mx-auto p-6 bg-white shadow-md rounded-md md:my-22">
       <h1 className="text-2xl font-bold text-[#0055A4] mb-2">
         Transcript Payment
       </h1>
