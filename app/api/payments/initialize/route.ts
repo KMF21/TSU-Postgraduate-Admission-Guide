@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const data = schema.parse(body);
 
     const transcriptFee = 10000; // base fee
-    const serviceCharge = data.extraCharge ?? 300; // default service charge
+    const serviceCharge = data.extraCharge ?? 200; // default service charge
     const totalAmount = transcriptFee + serviceCharge;
 
     const reference = `TSU-${nanoid(10)}`;

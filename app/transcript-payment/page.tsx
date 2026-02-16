@@ -146,8 +146,8 @@ export default function TranscriptPaymentPage() {
         {[
           { label: "Full Name", name: "fullName" },
           { label: "Matric Number", name: "matricNumber" },
-          { label: "Email", name: "email", type: "email" },
-          { label: "Phone", name: "phone" },
+          { label: "Personal Email", name: "email", type: "email" },
+          { label: "Phone Number", name: "phone" },
           { label: "Programme", name: "programme" },
           { label: "Year of Graduation", name: "yearOfGraduation", type: "number" },
           { label: "Destination Institution", name: "destinationInstitution" },
