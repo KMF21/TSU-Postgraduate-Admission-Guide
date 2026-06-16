@@ -95,7 +95,7 @@ export function Footer() {
       </div>
       <div className="  text-center text-sm  text-green-600">
         <Link
-          href="https://kmfenterprise.vercel.app"
+          href="https://www.kmfenterprise.ng"
           target="_blank"
           className="hover:text-gray-400"
         >
