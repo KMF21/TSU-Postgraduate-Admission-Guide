@@ -41,7 +41,7 @@ export function LeadershipSection() {
       <div className="mx-auto max-w-6xl px-6">
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
-          Institutional Leadership (For Reference)
+          Institutional Leadership 
         </h2>
 
         {/* Leadership Cards */}
