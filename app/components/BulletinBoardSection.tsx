@@ -14,7 +14,7 @@ interface BulletinItem {
 const bulletins: BulletinItem[] = [
   { id: "b1", title: "Application portal opens", date: "30-01-2026" },
   { id: "b2", title: "Application deadline", date: "31-05-2026" },
-  { id: "b3", title: "Screening / interviews", date: "00-00-2026" },
+  { id: "b3", title: "Screening / interviews", date: "03-06-2026" },
 ];
 
 export const BulletinBoardSection: React.FC = () => {
