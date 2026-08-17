@@ -64,10 +64,10 @@ export function LeadershipSection() {
         </div>
 
         {/* Disclaimer */}
-        <p className="mt-8 max-w-4xl text-sm italic text-gray-600 mx-auto text-center">
+        {/* <p className="mt-8 max-w-4xl text-sm italic text-gray-600 mx-auto text-center">
           The inclusion of leadership images and titles is for institutional reference only. 
           This platform is an independent initiative and is not an official channel of Taraba State University.
-        </p>
+        </p> */}
       </div>
     </section>
   );
