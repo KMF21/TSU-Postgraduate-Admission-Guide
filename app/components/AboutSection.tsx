@@ -12,11 +12,11 @@ export function AboutSection() {
             candidates can access verified information about PGD, MSc, and PhD
             programmes, application procedures, and key academic updates.
           </p>
-
+{/* 
           <p className="text-sm text-gray-700">
             This platform is independent, but all content is sourced from
             official university notices to ensure accuracy and reliability.
-          </p>
+          </p> */}
         </div>
       </div>
     </section>
